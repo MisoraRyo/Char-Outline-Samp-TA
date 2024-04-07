@@ -436,9 +436,6 @@ class ObjectText{
         //console.log(CharElement);
         const TEXT = CharElement.char;
         const shapes = Ffont.generateShapes( TEXT, 4 );//文字サイズ
-        const TextGeometry = new THREE.ShapeGeometry( shapes, 4 );
-        TextGeometry.computeBoundingBox();
-        TextGeometry.center();//Center the geometry based on the bounding box.
 
         //中のラインを形成するために必要
         const holeShapes = [];
@@ -481,7 +478,6 @@ class ObjectText{
 
         lineText.name = "SongText";
         scene.add( lineText );
-        TextGeometry.dispose();
         /////////////////////////////////////////////////////////////////
 
         charnum++;
