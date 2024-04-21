@@ -2,7 +2,7 @@
 ///// IMPORT
 import './style.css'
 // Textalive関連
-import Songs from './song.json';
+import Songs from './song.json'; //プロコン用の楽曲データ
 import { Player } from "textalive-app-api";
 // Three.js関連
 import * as THREE from 'three'
@@ -11,8 +11,9 @@ import Stats from "three/examples/jsm/libs/stats.module";
 import GUI, { FunctionController } from 'lil-gui';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import Typeface from '../static/ZenOldMincho_Regular_min.json';
-// Animation
+// Animation用
 import { gsap } from "gsap";
+
 
 // GUIの初期設定
 const gui = new GUI({width:180});
@@ -157,16 +158,9 @@ player.addListener({
         console.log("終了時間 duration:" + endTime);
         console.log("FPS:" + player.fps);
 
-        //ビートタイムから気持ちよいタイミングを算出
-        let BEATS = player.data.songMap.beats;
-        let Avearage = 0;
-        for(let i=0; i<20; i++){
-          const Btime = (BEATS[i].endTime - BEATS[i].startTime)/1000;
-          Avearage += Btime;
-        }
-        BeatInterval = Math.floor(Avearage / 20 * 1000) / 1000; //小数点処理しています。
-        console.log("平均 BeatInterval:"+BeatInterval);
-
+        //ビートタイム
+        //let BEATS = player.data.songMap.beats;
+        //console.log(BEATS);
 
       }//END if (!player.app.managed)
   
@@ -220,6 +214,45 @@ player.addListener({
       nowWord = "";
       nowPhrase = "";
     },
+
+    //再生時に回転する 再生位置の情報が更新されたら呼ばれる */
+    // onTimeUpdate: (position) =>{
+    //   console.log(position);
+
+    //   /* 歌詞＆フレーズ　*/
+    //   let Char = player.video.findChar(position - 100, { loose: true });
+    //   let Word = player.video.findWord( position - 100, { loose: true });
+    //   let Phrase = player.video.findPhrase( position - 100, { loose: true });
+      
+    //   //文字を取得する
+    //   if(nowChar != Char.text){
+    //         nowChar = Char.text;
+    //         console.log(nowChar);
+    //   }//End if(char)
+
+    //   //単語を取得する
+    //   if(Word){
+    //     if(nowWord != Word.text){
+    //         nowWord = Word.text;
+    //         console.log(nowWord);
+    //     }
+    //   }//End if(Word)
+      
+    //   //フレーズを取得する
+    //   if(Phrase) {
+    //     if(nowPhrase != Phrase.text){
+    //         nowPhrase = Phrase.text
+    //         console.log(nowPhrase);
+    //     }
+    //   }//End if(phrase)
+      
+    //   //ボーカルの声量を取得する
+    //   SongVocal = player.getVocalAmplitude(position)/ MaxVocal;
+    //   console.log(SongVocal);
+
+    //   //声量を100%で表示する
+    //   //positionbarElement.style.width = Math.floor( position ) / endTime * 100 + "%";
+    // }// End onTimeUpdate
   
 
 });//END player.addListener
@@ -265,8 +298,8 @@ function getRandomNum(min = 0, max = 0){
 ///// SCENE CREATION
 
 const scene = new THREE.Scene()
-scene.background = new THREE.Color('#eeeeee');
-scene.fog = new THREE.Fog(0xeeeeee, 50, 500);
+scene.background = new THREE.Color('#eeeeee'); // 背景色
+scene.fog = new THREE.Fog(0xeeeeee, 50, 500); // Fogの設定
 
 /////////////////////////////////////////////////////////////////////////
 ///// RENDERER CONFIG
@@ -322,7 +355,7 @@ const axesHelper = new THREE.AxesHelper(10);
 scene.add(axesHelper);
 
 /////////////////////////////////////////////////////////////////////////
-///// OBJECT
+///// OBJECT DELETE
 
 // Sceneにある指定されたidを削除する
 function removeObjectsByName(SC, Name) {
@@ -358,6 +391,9 @@ function removeObjectsByName(SC, Name) {
   });
 
 }
+
+/////////////////////////////////////////////////////////////////////////
+///// OBJECT SET
 
 //文字データから、大小を識別して位置とサイズを算出して、配列にデータを格納する
 function calculation(PhraseData){
